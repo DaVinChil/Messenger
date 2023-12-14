@@ -14,5 +14,5 @@ interface MessengerApi {
 }
 
 data class MessageDto(val sender: UserDto, val message: String)
-data class Message(val sender: UserDto, val message: String, val date: Date)
+data class Message(val id: Long, val sender: UserDto, val message: String, val date: Date)
 data class UserDto(val name: String)

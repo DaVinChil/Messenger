@@ -3,7 +3,9 @@ package ru.ns.messenger
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,21 +24,15 @@ import ru.ns.messenger.ui.chat.ChatScreen
 import ru.ns.messenger.ui.register.RegisterScreen
 import ru.ns.messenger.ui.theme.MessengerTheme
 
-// TODO: Change date
-// TODO: Saver for key in lazy column
-// TODO: Repo for api
-// TODO: Add padding for message
-// TODO: Shtobi ne uplivala za ikran
-// TODO: Background for message
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             MessengerTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().safeDrawingPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val viewModel: MainViewModel = viewModel()
