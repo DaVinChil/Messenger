@@ -45,7 +45,7 @@ fun RegisterScreen(modifier: Modifier = Modifier, onSubmitUsername: (String) -> 
             modifier = Modifier.fillMaxWidth(0.5f),
             onClick = { onSubmitUsername(username) }
         ) {
-            Text(text = "REGISTER")
+            Text(text = "Enter a chat")
         }
     }
 }

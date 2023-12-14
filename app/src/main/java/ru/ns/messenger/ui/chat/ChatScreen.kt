@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,8 +60,11 @@ fun ChatContent(
     messages: List<Message>,
     isMineMessage: (Message) -> Boolean
 ) {
-    LazyColumn(modifier = modifier) {
-        items(count = messages.size) {
+    LazyColumn(modifier = modifier.padding(horizontal = 5.dp)) {
+        items(
+            count = messages.size,
+            key = { messages[it].id }
+        ) {
             val arrangement =
                 if (isMineMessage(messages[it])) Arrangement.End else Arrangement.Start
             Spacer(modifier = Modifier.height(5.dp))
@@ -77,9 +82,9 @@ fun formatDate(date: Date): String = SimpleDateFormat("hh:mm").format(date)
 fun Message(modifier: Modifier = Modifier, message: Message) {
     Column(
         modifier = modifier
-            .widthIn(min = 100.dp, max = 200.dp)
+            .widthIn(min = 50.dp, max = 200.dp)
             .background(color = Color(0x5019D8E1), shape = RoundedCornerShape(20.dp))
-            .padding(5.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
     ) {
         
         Text(
@@ -91,16 +96,19 @@ fun Message(modifier: Modifier = Modifier, message: Message) {
             fontWeight = Bold
         )
 
+        Spacer(modifier = Modifier.height(5.dp))
+
         Row(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.widthIn(min = 100.dp)
+            modifier = Modifier.align(Alignment.End)
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 fontSize = 17.sp,
                 text = message.message
             )
+            Spacer(modifier = Modifier.width(5.dp))
             Text(
                 modifier = Modifier,
                 fontSize = 10.sp,

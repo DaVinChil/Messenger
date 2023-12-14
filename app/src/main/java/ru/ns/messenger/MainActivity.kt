@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     if(viewModel.isUserFetching.value) {
                         CircularProgressIndicator(modifier = Modifier.fillMaxSize())
                     } else {
-                        ChatApp(viewModel.user, viewModel::saveUser, viewModel.message.value, viewModel::sendMessage)
+                        ChatApp(viewModel.user.value, viewModel::saveUser, viewModel.message.value, viewModel::sendMessage)
                     }
                 }
             }
