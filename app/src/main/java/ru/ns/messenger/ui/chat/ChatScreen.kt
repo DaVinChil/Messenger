@@ -49,7 +49,13 @@ fun ChatContent(
     isMineMessage: (Message) -> Boolean
 ) {
     LazyColumn(modifier = modifier) {
-        items(count = messages.size) {
+        items(
+            count = messages.size,
+            key = {
+                val message = messages[it]
+                "${message.message}${message.date}"
+            }
+        ) {
             val arrangement =
                 if (isMineMessage(messages[it])) Arrangement.End else Arrangement.Start
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = arrangement) {

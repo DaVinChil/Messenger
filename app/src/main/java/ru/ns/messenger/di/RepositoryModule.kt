@@ -4,14 +4,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
 import ru.ns.messenger.api.MessengerApi
+import ru.ns.messenger.db.repository.MessengerRepository
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ApiModule {
+object RepositoryModule {
     @Provides
     @Singleton
-    fun messengerApi(retrofit: Retrofit) = retrofit.create(MessengerApi::class.java)
+    fun messengerRepository(messengerApi: MessengerApi) = MessengerRepository(messengerApi)
 }

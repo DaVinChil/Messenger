@@ -13,15 +13,17 @@ import ru.ns.messenger.api.Message
 import ru.ns.messenger.api.MessageDto
 import ru.ns.messenger.api.MessengerApi
 import ru.ns.messenger.api.UserDto
+import ru.ns.messenger.db.Resource
 import ru.ns.messenger.db.dao.User
 import ru.ns.messenger.db.dao.UserRepository
+import ru.ns.messenger.db.repository.MessengerRepository
 import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val messengerApi: MessengerApi
+    private val messengerRepository: MessengerRepository
 ) : ViewModel() {
     var user: User? = null
         private set
@@ -50,15 +52,25 @@ class MainViewModel @Inject constructor(
 
     fun sendMessage(message: String) {
         viewModelScope.launch {
-            messengerApi.sendMessage(MessageDto(UserDto(user!!.name), message))
-            _messages.value = messengerApi.getMessages()
+            messengerRepository.sendMessage(MessageDto(UserDto(user!!.name), message))
+            when (val response = messengerRepository.getMessages()) {
+                is Resource.Success -> {
+                    _messages.value = response.value!!
+                }
+                is Resource.Error -> {}
+            }
         }
     }
 
     private fun infiniteMessageLoading() {
         viewModelScope.launch {
             while (true) {
-                _messages.value = messengerApi.getMessages()
+                when (val response = messengerRepository.getMessages()) {
+                    is Resource.Success -> {
+                        _messages.value = response.value!!
+                    }
+                    is Resource.Error -> {}
+                }
                 delay(10000L)
             }
         }
