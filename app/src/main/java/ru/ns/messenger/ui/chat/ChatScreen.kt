@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
@@ -25,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import ru.ns.messenger.api.Message
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -43,15 +48,25 @@ fun ChatScreen(
     onSendMessage: (String) -> Unit,
     isMineMessage: (Message) -> Boolean
 ) {
+    val chatListState = rememberLazyListState()
     Column(
         modifier = modifier.fillMaxSize()
     ) {
         ChatContent(
             modifier = Modifier.weight(1f),
             messages = messages,
-            isMineMessage = isMineMessage
+            isMineMessage = isMineMessage,
+            chatListState = chatListState
         )
-        InputMessage(onSendMessage = onSendMessage)
+        val coroutineScope = rememberCoroutineScope()
+        InputMessage(
+            onSendMessage = {
+                onSendMessage(it)
+                coroutineScope.launch {
+                    chatListState.animateScrollToItem(index = messages.lastIndex)
+                }
+            }
+        )
     }
 }
 
@@ -59,9 +74,11 @@ fun ChatScreen(
 fun ChatContent(
     modifier: Modifier = Modifier,
     messages: List<Message>,
-    isMineMessage: (Message) -> Boolean
+    isMineMessage: (Message) -> Boolean,
+    chatListState: LazyListState
 ) {
     LazyColumn(
+        state = chatListState,
         modifier = modifier,
         contentPadding = PaddingValues(10.dp)
     ) {
@@ -88,7 +105,7 @@ fun Message(modifier: Modifier = Modifier, message: Message) {
         modifier = modifier
             .widthIn(min = 50.dp, max = 200.dp)
             .background(color = Color(0x5019D8E1), shape = RoundedCornerShape(20.dp))
-            .padding(10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
     ) {
         Text(
             modifier = Modifier
@@ -98,16 +115,20 @@ fun Message(modifier: Modifier = Modifier, message: Message) {
             color = Color(0xFF0EB355),
             fontWeight = Bold
         )
+
+        Spacer(modifier = Modifier.height(5.dp))
+
         Row(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.widthIn(min = 50.dp)
+            modifier = Modifier.align(Alignment.End)
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 fontSize = 17.sp,
                 text = message.message
             )
+            Spacer(modifier = Modifier.width(5.dp))
             Text(
                 modifier = Modifier,
                 fontSize = 10.sp,
@@ -119,7 +140,9 @@ fun Message(modifier: Modifier = Modifier, message: Message) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputMessage(onSendMessage: (String) -> Unit) {
+fun InputMessage(
+    onSendMessage: (String) -> Unit,
+) {
     Row(modifier = Modifier.fillMaxWidth()) {
         var msg by remember { mutableStateOf("") }
         TextField(
@@ -127,7 +150,7 @@ fun InputMessage(onSendMessage: (String) -> Unit) {
             value = msg,
             onValueChange = { msg = it },
             placeholder = {
-                Text(text = "Enter message")
+                Text(text = "Enter a message")
             }
         )
         IconButton(
