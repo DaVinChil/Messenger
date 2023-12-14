@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import ru.ns.messenger.api.Message
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -48,24 +46,18 @@ fun ChatScreen(
     onSendMessage: (String) -> Unit,
     isMineMessage: (Message) -> Boolean
 ) {
-    val chatListState = rememberLazyListState()
     Column(
         modifier = modifier.fillMaxSize()
     ) {
+        val chatListState = rememberLazyListState()
         ChatContent(
             modifier = Modifier.weight(1f),
             messages = messages,
             isMineMessage = isMineMessage,
             chatListState = chatListState
         )
-        val coroutineScope = rememberCoroutineScope()
         InputMessage(
-            onSendMessage = {
-                onSendMessage(it)
-                coroutineScope.launch {
-                    chatListState.animateScrollToItem(index = messages.lastIndex)
-                }
-            }
+            onSendMessage = onSendMessage
         )
     }
 }
@@ -155,8 +147,10 @@ fun InputMessage(
         )
         IconButton(
             onClick = {
-                onSendMessage(msg)
-                msg = ""
+                if (msg != "") {
+                    onSendMessage(msg)
+                    msg = ""
+                }
             }
         ) {
             Icon(
