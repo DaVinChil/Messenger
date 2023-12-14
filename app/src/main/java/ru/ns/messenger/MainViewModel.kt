@@ -1,5 +1,6 @@
 package ru.ns.messenger
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,8 +24,9 @@ class MainViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val messengerApi: MessengerApi
 ) : ViewModel() {
-    var user: User? = null
-        private set
+    private var _user: MutableState<User?> = mutableStateOf(null)
+    val user: State<User?>
+        get() = _user
     private var _isUserFetching = mutableStateOf(true)
     val isUserFetching: State<Boolean>
         get() = _isUserFetching
@@ -43,14 +45,14 @@ class MainViewModel @Inject constructor(
 
     private fun loadUser() {
         viewModelScope.launch {
-            user = userRepository.getUser()
+            _user.value = userRepository.getUser()
             _isUserFetching.value = false
         }
     }
 
     fun sendMessage(message: String) {
         viewModelScope.launch {
-            messengerApi.sendMessage(MessageDto(UserDto(user!!.name), message))
+            messengerApi.sendMessage(MessageDto(UserDto(_user.value!!.name), message))
             _messages.value = messengerApi.getMessages()
         }
     }
