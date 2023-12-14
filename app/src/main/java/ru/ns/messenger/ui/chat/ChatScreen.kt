@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,7 +43,9 @@ fun ChatScreen(
     onSendMessage: (String) -> Unit,
     isMineMessage: (Message) -> Boolean
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
         ChatContent(
             modifier = Modifier.weight(1f),
             messages = messages,
@@ -58,7 +61,10 @@ fun ChatContent(
     messages: List<Message>,
     isMineMessage: (Message) -> Boolean
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(10.dp)
+    ) {
         items(
             count = messages.size,
             key = { messages[it].id }
@@ -80,11 +86,10 @@ fun formatDate(date: Date): String = SimpleDateFormat("hh:mm").format(date)
 fun Message(modifier: Modifier = Modifier, message: Message) {
     Column(
         modifier = modifier
-            .widthIn(min = 100.dp, max = 200.dp)
+            .widthIn(min = 50.dp, max = 200.dp)
             .background(color = Color(0x5019D8E1), shape = RoundedCornerShape(20.dp))
-            .padding(5.dp)
+            .padding(10.dp)
     ) {
-        
         Text(
             modifier = Modifier
                 .align(Alignment.Start),
@@ -93,11 +98,10 @@ fun Message(modifier: Modifier = Modifier, message: Message) {
             color = Color(0xFF0EB355),
             fontWeight = Bold
         )
-
         Row(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.widthIn(min = 100.dp)
+            modifier = Modifier.widthIn(min = 50.dp)
         ) {
             Text(
                 modifier = Modifier.weight(1f),
@@ -110,7 +114,6 @@ fun Message(modifier: Modifier = Modifier, message: Message) {
                 text = formatDate(message.date)
             )
         }
-
     }
 }
 
@@ -124,12 +127,20 @@ fun InputMessage(onSendMessage: (String) -> Unit) {
             value = msg,
             onValueChange = { msg = it },
             placeholder = {
-                Text(
-                    text = "Enter message"
-                )
-            })
-        IconButton(onClick = { onSendMessage(msg) }) {
-            Icon(imageVector = Icons.Filled.Send, contentDescription = "send")
+                Text(text = "Enter message")
+            }
+        )
+        IconButton(
+            onClick = {
+                onSendMessage(msg)
+                msg = ""
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Send,
+                tint = Color(0xFF19D8E1),
+                contentDescription = "send"
+            )
         }
     }
 }

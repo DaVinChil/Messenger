@@ -1,9 +1,7 @@
 package ru.ns.messenger
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,13 +9,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.ns.messenger.api.Message
 import ru.ns.messenger.api.MessageDto
-import ru.ns.messenger.api.MessengerApi
 import ru.ns.messenger.api.UserDto
 import ru.ns.messenger.db.Resource
 import ru.ns.messenger.db.dao.User
 import ru.ns.messenger.db.dao.UserRepository
 import ru.ns.messenger.db.repository.MessengerRepository
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
