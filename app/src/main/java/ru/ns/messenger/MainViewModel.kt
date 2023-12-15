@@ -25,9 +25,11 @@ class MainViewModel @Inject constructor(
     private var _user: MutableState<User?> = mutableStateOf(null)
     val user: State<User?>
         get() = _user
+
     private var _isUserFetching = mutableStateOf(true)
     val isUserFetching: State<Boolean>
         get() = _isUserFetching
+
     private val _messages = mutableStateOf(listOf<Message>())
     val message: State<List<Message>>
         get() = _messages
@@ -38,7 +40,10 @@ class MainViewModel @Inject constructor(
     }
 
     fun saveUser(userName: String) {
-        viewModelScope.launch { userRepository.insertUser(userName); loadUser() }
+        viewModelScope.launch {
+            userRepository.insertUser(userName)
+            loadUser()
+        }
     }
 
     private fun loadUser() {
@@ -50,7 +55,12 @@ class MainViewModel @Inject constructor(
 
     fun sendMessage(message: String) {
         viewModelScope.launch {
-            messengerRepository.sendMessage(MessageDto(UserDto(_user.value!!.name), message))
+            val messageDto = MessageDto(
+                sender = UserDto(_user.value!!.name),
+                message = message
+            )
+            messengerRepository.sendMessage(messageDto)
+
             when (val response = messengerRepository.getMessages()) {
                 is Resource.Success -> {
                     _messages.value = response.value!!
