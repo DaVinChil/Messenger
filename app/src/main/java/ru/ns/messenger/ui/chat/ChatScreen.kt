@@ -1,17 +1,23 @@
 package ru.ns.messenger.ui.chat
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imeNestedScroll
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -58,12 +64,10 @@ fun ChatScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        val chatListState = rememberLazyListState()
         ChatContent(
             modifier = Modifier.weight(1f),
             messages = messages,
-            isMineMessage = isMineMessage,
-            chatListState = chatListState
+            isMineMessage = isMineMessage
         )
         InputMessage(
             onSendMessage = onSendMessage
@@ -71,23 +75,30 @@ fun ChatScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ChatContent(
     modifier: Modifier = Modifier,
     messages: List<Message>,
     isMineMessage: (Message) -> Boolean,
-    chatListState: LazyListState
 ) {
+    val chatListState = rememberLazyListState(
+        initialFirstVisibleItemIndex = messages.lastIndex
+    )
     val showScrollToBottom by remember {
         derivedStateOf {
             chatListState.isNotScrolledToTheEnd()
         }
     }
+    val coroutineScope = rememberCoroutineScope()
     Box(modifier = modifier) {
         LazyColumn(
             state = chatListState,
             contentPadding = PaddingValues(10.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier
+                .imePadding()
+                .imeNestedScroll()
         ) {
             items(
                 count = messages.size,
@@ -103,8 +114,13 @@ fun ChatContent(
                 }
             }
         }
-        if (showScrollToBottom) {
-            val coroutineScope = rememberCoroutineScope()
+        AnimatedVisibility(
+            visible = showScrollToBottom,
+            label = "animated scroll button",
+            enter = fadeIn(initialAlpha = 0.1f),
+            exit = fadeOut(),
+            modifier = Modifier.align(Alignment.BottomEnd)
+        ) {
             ScrollDownButton(
                 onClick = {
                     coroutineScope.launch {
@@ -112,13 +128,10 @@ fun ChatContent(
                     }
                 },
                 itemsCountToScrollThrough = chatListState.itemsCountAfterLastVisibleItem(),
-                modifier = Modifier
-                    .padding(20.dp)
-                    .align(Alignment.BottomEnd)
+                modifier = Modifier.padding(20.dp)
             )
         }
     }
-
 }
 
 @Composable
@@ -137,9 +150,7 @@ fun Message(modifier: Modifier = Modifier, message: Message) {
             color = Color(0xFF0EB355),
             fontWeight = Bold
         )
-
         Spacer(modifier = Modifier.height(5.dp))
-
         Row(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween,

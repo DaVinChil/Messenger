@@ -18,8 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.AndroidEntryPoint
-import ru.ns.messenger.api.Message
-import ru.ns.messenger.db.dao.User
 import ru.ns.messenger.ui.chat.ChatScreen
 import ru.ns.messenger.ui.register.RegisterScreen
 import ru.ns.messenger.ui.theme.MessengerTheme
@@ -37,17 +35,7 @@ class MainActivity : ComponentActivity() {
                         .safeDrawingPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val viewModel: MainViewModel = viewModel()
-                    if (viewModel.isUserFetching.value) {
-                        LoadingPage()
-                    } else {
-                        ChatApp(
-                            user = viewModel.user.value,
-                            onSubmitUsername = viewModel::saveUser,
-                            messages = viewModel.message.value,
-                            onSendMessage = viewModel::sendMessage
-                        )
-                    }
+                    ChatApp()
                 }
             }
         }
@@ -67,19 +55,26 @@ fun LoadingPage() {
 }
 
 @Composable
-fun ChatApp(
-    user: User?,
-    onSubmitUsername: (String) -> Unit,
-    messages: List<Message>,
-    onSendMessage: (String) -> Unit
-) {
-    if (user == null) {
-        RegisterScreen(onSubmitUsername = onSubmitUsername)
-    } else {
-        ChatScreen(
-            messages = messages,
-            onSendMessage = onSendMessage,
-            isMineMessage = { it.sender.name == user.name }
-        )
+fun ChatApp() {
+    MessengerTheme {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .safeDrawingPadding(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            val viewModel: MainViewModel = viewModel()
+            when {
+                viewModel.isUserFetching -> LoadingPage()
+                viewModel.user == null -> RegisterScreen(onSubmitUsername = viewModel::saveUser)
+                else -> {
+                    ChatScreen(
+                        messages = viewModel.messages,
+                        onSendMessage = viewModel::sendMessage,
+                        isMineMessage = { it.sender.name == viewModel.user?.name }
+                    )
+                }
+            }
+        }
     }
 }

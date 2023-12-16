@@ -25,7 +25,10 @@ import ru.ns.messenger.ui.theme.MessengerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier, onSubmitUsername: (String) -> Unit) {
+fun RegisterScreen(
+    modifier: Modifier = Modifier,
+    onSubmitUsername: (String) -> Unit
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
