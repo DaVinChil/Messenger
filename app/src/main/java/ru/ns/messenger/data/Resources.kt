@@ -1,4 +1,4 @@
-package ru.ns.messenger.db
+package ru.ns.messenger.data
 
 sealed class Resource<T>(val value: T? = null) {
     class Success<T>(value: T) : Resource<T>(value)

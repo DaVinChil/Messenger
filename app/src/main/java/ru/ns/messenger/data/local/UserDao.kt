@@ -1,4 +1,4 @@
-package ru.ns.messenger.db.dao
+package ru.ns.messenger.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert

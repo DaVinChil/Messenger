@@ -1,4 +1,4 @@
-package ru.ns.messenger.api
+package ru.ns.messenger.data.remote
 
 import retrofit2.http.Body
 import retrofit2.http.GET

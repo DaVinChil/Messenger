@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import ru.ns.messenger.api.MessengerApi
+import ru.ns.messenger.data.remote.MessengerApi
 import javax.inject.Singleton
 
 @Module

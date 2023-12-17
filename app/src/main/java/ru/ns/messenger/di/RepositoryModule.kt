@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.ns.messenger.api.MessengerApi
-import ru.ns.messenger.db.repository.MessengerRepository
+import ru.ns.messenger.data.remote.MessengerApi
+import ru.ns.messenger.data.remote.MessengerRepository
 import javax.inject.Singleton
 
 @Module

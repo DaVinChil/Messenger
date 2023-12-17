@@ -7,9 +7,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import ru.ns.messenger.db.dao.UserDao
-import ru.ns.messenger.db.dao.UserDatabase
-import ru.ns.messenger.db.dao.UserRepository
+import ru.ns.messenger.data.local.UserDao
+import ru.ns.messenger.data.local.UserDatabase
+import ru.ns.messenger.data.local.UserRepository
 import javax.inject.Singleton
 
 @Module

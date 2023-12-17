@@ -8,13 +8,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.ns.messenger.api.Message
-import ru.ns.messenger.api.MessageDto
-import ru.ns.messenger.api.UserDto
-import ru.ns.messenger.db.Resource
-import ru.ns.messenger.db.dao.User
-import ru.ns.messenger.db.dao.UserRepository
-import ru.ns.messenger.db.repository.MessengerRepository
+import ru.ns.messenger.data.remote.Message
+import ru.ns.messenger.data.remote.MessageDto
+import ru.ns.messenger.data.remote.UserDto
+import ru.ns.messenger.data.Resource
+import ru.ns.messenger.data.local.User
+import ru.ns.messenger.data.local.UserRepository
+import ru.ns.messenger.data.remote.MessengerRepository
 import javax.inject.Inject
 
 @HiltViewModel

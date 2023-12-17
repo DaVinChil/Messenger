@@ -1,4 +1,4 @@
-package ru.ns.messenger.db
+package ru.ns.messenger.data
 
 sealed class RequestStatus {
     object Success : RequestStatus()

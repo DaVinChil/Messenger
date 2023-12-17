@@ -1,10 +1,7 @@
-package ru.ns.messenger.db.repository
+package ru.ns.messenger.data.remote
 
-import ru.ns.messenger.api.Message
-import ru.ns.messenger.api.MessageDto
-import ru.ns.messenger.api.MessengerApi
-import ru.ns.messenger.db.RequestStatus
-import ru.ns.messenger.db.Resource
+import ru.ns.messenger.data.RequestStatus
+import ru.ns.messenger.data.Resource
 import java.lang.Exception
 import javax.inject.Inject
 
