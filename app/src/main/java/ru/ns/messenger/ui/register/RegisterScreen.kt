@@ -35,7 +35,6 @@ fun RegisterScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var username by remember { mutableStateOf("") }
-
         TextField(
             modifier = Modifier.fillMaxWidth(0.5f),
             value = username,
@@ -45,7 +44,11 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(10.dp))
         Button(
             modifier = Modifier.fillMaxWidth(0.5f),
-            onClick = { onSubmitUsername(username) }
+            onClick = {
+                if (username.length >= 4) {
+                    onSubmitUsername(username)
+                }
+            }
         ) {
             Text(text = "Enter a chat")
         }

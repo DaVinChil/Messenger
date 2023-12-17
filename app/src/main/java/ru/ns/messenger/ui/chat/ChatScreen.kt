@@ -47,22 +47,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import ru.ns.messenger.api.Message
+import ru.ns.messenger.api.UserDto
 import java.text.SimpleDateFormat
 import java.util.Date
 
 @Composable
 fun ChatScreen(
-    modifier: Modifier = Modifier,
     messages: List<Message>,
     onSendMessage: (String) -> Unit,
     isMineMessage: (Message) -> Boolean
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         ChatContent(
             modifier = Modifier.weight(1f),
@@ -135,7 +136,10 @@ fun ChatContent(
 }
 
 @Composable
-fun Message(modifier: Modifier = Modifier, message: Message) {
+fun Message(
+    modifier: Modifier = Modifier,
+    message: Message
+) {
     Column(
         modifier = modifier
             .widthIn(min = 50.dp, max = 200.dp)
@@ -239,6 +243,88 @@ fun ScrollDownButton(
     }
 }
 
+@Preview
+@Composable
+fun ChatScreenPreview() {
+    ChatScreen(
+        messages = listOf(
+            Message(
+                id = 1L,
+                sender = UserDto("Tom"),
+                message = "Hello!",
+                date = Date()
+            ),
+            Message(
+                id = 2L,
+                sender = UserDto("Tim"),
+                message = "Hi, how are you?",
+                date = Date()
+            ),
+            Message(
+                id = 3L,
+                sender = UserDto("Alex"),
+                message = "-_-",
+                date = Date()
+            )
+        ),
+        onSendMessage = {},
+        isMineMessage = { it.id == 2L }
+    )
+}
+
+@Preview
+@Composable
+fun ChatContentPreview() {
+    ChatContent(
+        messages = listOf(
+            Message(
+                id = 1L,
+                sender = UserDto("Tom"),
+                message = "Hello!",
+                date = Date()
+            ),
+            Message(
+                id = 2L,
+                sender = UserDto("Tim"),
+                message = "Hi, how are you?",
+                date = Date()
+            ),
+            Message(
+                id = 3L,
+                sender = UserDto("Alex"),
+                message = "-_-",
+                date = Date()
+            )
+        ),
+        isMineMessage = { it.id == 2L }
+    )
+}
+
+@Preview
+@Composable
+fun MessagePreview() {
+    Message(
+        message = Message(
+            id = 1L,
+            sender = UserDto("Tom"),
+            message = "Hello",
+            date = Date()
+        )
+    )
+}
+
+@Preview
+@Composable
+fun InputMessagePreview() {
+    InputMessage(onSendMessage = {})
+}
+
+@Preview
+@Composable
+fun ScrollDownButtonPreview() {
+    ScrollDownButton(onClick = {}, itemsCountToScrollThrough = 1)
+}
+
 @SuppressLint("SimpleDateFormat")
 fun formatDate(date: Date): String = SimpleDateFormat("hh:mm").format(date)
 
@@ -249,4 +335,3 @@ fun LazyListState.itemsCountAfterLastVisibleItem(): Int {
 }
 
 fun LazyListState.isNotScrolledToTheEnd() = itemsCountAfterLastVisibleItem() > 0
-
